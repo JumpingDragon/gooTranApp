@@ -19,7 +19,7 @@ class GoogleTrans(QMainWindow, form_class):
 
         self.trans_btn.clicked.connect(self.trans_action)   # Signal (이 가야 slot에서 실행)
         self.init_btn.clicked.connect(self.init_action)
-
+        self.inpt_init.clicked.connect(self.inputInit_action)
 
     def trans_action(self):   # 번역 실행 함수 -> slot 함수
         korText = self.kor_input.text()     # kor_input에 입력된 한글 텍스트 가져오기
@@ -41,6 +41,9 @@ class GoogleTrans(QMainWindow, form_class):
         self.eng_input.clear()
         self.jap_input.clear()
         self.chn_input.clear()
+
+    def inputInit_action(self):
+        self.kor_input.clear()
         
 
 if __name__ == "__main__":
