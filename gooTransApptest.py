@@ -1,3 +1,4 @@
+import re
 import sys
 import googletrans
 
@@ -23,20 +24,28 @@ class GoogleTrans(QMainWindow, form_class):
 
     def trans_action(self):   # 번역 실행 함수 -> slot 함수
         korText = self.kor_input.text()     # kor_input에 입력된 한글 텍스트 가져오기
+        reg = re.compile("[^가-힣]")
+        if reg.search(korText):  # 한글인지 아닌지 여부 확인
+            print("한글 문장이 아님.")
+            QMessageBox.warning(self, "입력 오류!", "한글 입력란에 한글 내용을 입력하세요.")
+        elif korText == "":
+            print("공백 입력은 안됨.")
+            QMessageBox.warning(self, "입력 오류!", "한글 입력란에 번역할 내용을 입력하세요.")
+        else:
+            print("정상 출력됨.")
+            trans = googletrans.Translator()  # 구글 트랜스 모듈의 객체 선언
+            # print(googletrans.LANGUAGES) -> 번역 언어의 dest 약자 찾기
 
-        trans = googletrans.Translator()    # 구글트랜스 모듈의 객체 선언
-        # print(googletrans.LANGUAGES) -> 번역 언어의 dest 약자 찾기
+            engText = trans.translate(korText, dest="en")  # 영어 번역 결과
+            japText = trans.translate(korText, dest="ja")  # 일본어 번역 결과
+            chnText = trans.translate(korText, dest="zh-cn")  # 중국어 번역 결과
 
-        engText = trans.translate(korText, dest="en")     # 영어 번역결과
-        japText = trans.translate(korText, dest="ja")     # 일본어 번역결과
-        chnText = trans.translate(korText, dest="zh-cn")     # 중국어 번역결과
+            self.eng_input.append(engText.text)  # .text 써줘야 함
+            # 번역된 영어 텍스트를 eng_input (ui에서 우리가 만든 영어 부분)에 출력
+            self.jap_input.append(japText.text)  # .text 써줘야 함
+            self.chn_input.append(chnText.text)  # .text 써줘야 함
 
-        self.eng_input.append(engText.text)  # .text 써줘야 함
-        # 번역된 영어 텍스트를 eng_input (ui에서 우리가 만든 영어 부분)에 출력
-        self.jap_input.append(japText.text)  # .text 써줘야 함
-        self.chn_input.append(chnText.text)  # .text 써줘야 함
-
-    def init_action(self):      # gui에서 초기화 버튼
+    def init_action(self):      # gui 에서 초기화 버튼
         self.kor_input.clear()   # 입력 내용 지우기
         self.eng_input.clear()
         self.jap_input.clear()
